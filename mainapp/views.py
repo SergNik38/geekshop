@@ -10,8 +10,7 @@ def main(request):
 
     products = Product.objects.all()[:4]
 
-    content = {"title": title, "products": products,
-               "media_url": settings.MEDIA_URL}
+    content = {"title": title, "products": products, "media_url": settings.MEDIA_URL}
     return render(request, "mainapp/index.html", content)
 
 
@@ -34,6 +33,5 @@ def contact(request):
     title = "о нас"
     visit_date = timezone.now()
     locations = Contact.objects.all()
-    content = {"title": title, "visit_date": visit_date,
-               "locations": locations}
+    content = {"title": title, "visit_date": visit_date, "locations": locations}
     return render(request, "mainapp/contact.html", content)

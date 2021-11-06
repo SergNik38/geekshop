@@ -10,8 +10,7 @@ def forwards_func(apps, schema_editor):
     con_model = apps.get_model("mainapp", "Contact")
 
     # Create new category
-    pro_cat_obj = pro_cat_model.objects.create(
-        pk=1, name="дом", description="отличная мебель для домашнего интерьера.")
+    pro_cat_obj = pro_cat_model.objects.create(pk=1, name="дом", description="отличная мебель для домашнего интерьера.")
     # Create new products in this category
     pro_model.objects.create(
         pk=1,
