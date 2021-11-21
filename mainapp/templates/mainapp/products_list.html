@@ -32,7 +32,8 @@
                     {% else %}
                     <a href="{% url 'auth:login' %}">
                         {% endif %}
-                        <img src="{{ media_url }}{{ product.image }}" alt="{{ product.short_desc }}">
+                        <img src="{{ media_url }}{{ product.image|default:'products_images/default.jpg' }}"
+                            alt="{{ product.short_desc }}">
                         <div class="text">
                             <img src="{% static 'img/icon-hover.png' %}" alt="hover">
                             <h4>{{ product.name }}</h4>
