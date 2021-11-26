@@ -5,8 +5,6 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
-from basketapp.models import Basket
-
 from .models import Contact, Product, ProductCategory
 
 
@@ -17,13 +15,6 @@ def main(request):
     content = {"title": title, "products": products,
                "media_url": settings.MEDIA_URL}
     return render(request, "mainapp/index.html", content)
-
-
-def get_basket(user):
-    if user.is_authenticated:
-        return Basket.objects.filter(user=user)
-    else:
-        return []
 
 
 def get_hot_product():
@@ -40,10 +31,9 @@ def get_same_products(hot_product):
 def products(request, pk=None, page=1):
     title = "продукты"
     links_menu = ProductCategory.objects.filter(is_active=True)
-    basket = get_basket(request.user)
 
     if pk is not None:
-        if pk == '0':
+        if str(pk) == str(0):
             category = {"pk": 0, "name": "все"}
             products = Product.objects.filter(
                 is_active=True, category__is_active=True).order_by("price")
@@ -67,7 +57,6 @@ def products(request, pk=None, page=1):
             "category": category,
             "products": products_paginator,
             "media_url": settings.MEDIA_URL,
-            "basket": basket,
         }
         return render(request, "mainapp/products_list.html", content)
     hot_product = get_hot_product()
@@ -77,7 +66,6 @@ def products(request, pk=None, page=1):
         "links_menu": links_menu,
         "same_products": same_products,
         "media_url": settings.MEDIA_URL,
-        "basket": basket,
         "hot_product": hot_product,
     }
     return render(request, "mainapp/products.html", content)
@@ -89,7 +77,6 @@ def product(request, pk):
         "title": title,
         "links_menu": ProductCategory.objects.filter(is_active=True),
         "product": get_object_or_404(Product, pk=pk),
-        "basket": get_basket(request.user),
         "media_url": settings.MEDIA_URL,
     }
     return render(request, "mainapp/product.html", content)
