@@ -12,8 +12,10 @@ from mainapp.models import Product
 @login_required
 def basket(request):
     title = "корзина"
-    basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
-    content = {"title": title, "basket_items": basket_items, "media_url": settings.MEDIA_URL}
+    basket_items = Basket.objects.filter(
+        user=request.user).order_by("product__category")
+    content = {"title": title, "basket_items": basket_items,
+               "media_url": settings.MEDIA_URL}
     return render(request, "basketapp/basket.html", content)
 
 
@@ -43,7 +45,12 @@ def basket_remove(request, pk):
 @login_required
 def basket_edit(request, pk, quantity):
     if request.is_ajax():
-        print(f"{pk} - {quantity}")
+        try:
+            pk = int(pk)
+            quantity = int(quantity)
+        except Exception as exp:
+            print(f"Wrong input numbers! {exp}")
+            raise exp
         new_basket_item = Basket.objects.get(pk=int(pk))
 
         if quantity > 0:
@@ -52,10 +59,13 @@ def basket_edit(request, pk, quantity):
         else:
             new_basket_item.delete()
 
-        basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
+        basket_items = Basket.objects.filter(
+            user=request.user).order_by("product__category")
 
-        content = {"basket_items": basket_items, "media_url": settings.MEDIA_URL}
+        content = {"basket_items": basket_items,
+                   "media_url": settings.MEDIA_URL}
 
-        result = render_to_string("basketapp/includes/inc_basket_list.html", content)
+        result = render_to_string(
+            "basketapp/includes/inc_basket_list.html", content)
 
         return JsonResponse({"result": result})
