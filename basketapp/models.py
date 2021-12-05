@@ -5,10 +5,13 @@ from mainapp.models import Product
 
 
 class Basket(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="basket")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, related_name="basket")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(verbose_name="количество", default=0)
-    add_datetime = models.DateTimeField(verbose_name="время добавления", auto_now_add=True)
+    quantity = models.PositiveIntegerField(
+        verbose_name="количество", default=0)
+    add_datetime = models.DateTimeField(
+        verbose_name="время добавления", auto_now_add=True)
 
     @property
     def product_cost(self):
@@ -28,3 +31,7 @@ class Basket(models.Model):
         _items = Basket.objects.filter(user=self.user)
         _totalcost = sum(list(map(lambda x: x.product_cost, _items)))
         return _totalcost
+
+    @staticmethod
+    def get_items(user):
+        return Basket.objects.filter(user=user).order_by("product__category")
