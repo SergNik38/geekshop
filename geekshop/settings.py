@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     "authnapp",
     "basketapp",
     "adminapp",
+    "social_django",
 ]
 
 # Auth model
@@ -70,6 +72,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "mainapp.context_processors.basket",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -165,3 +169,17 @@ EMAIL_HOST_PASSWORD = None
 # Email as files
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = "tmp/email-messages/"
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "social_core.backends.github.GithubOAuth2",
+)
+
+
+with open(
+    os.path.join(BASE_DIR, "tmp", "secrets", "github.json"), "r"
+) as secrets:
+    github_auth = json.load(secrets)
+
+SOCIAL_AUTH_GITHUB_KEY = github_auth["client_id"]
+SOCIAL_AUTH_GITHUB_SECRET = github_auth["client_secret"]
