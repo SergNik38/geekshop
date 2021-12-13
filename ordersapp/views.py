@@ -91,10 +91,12 @@ class OrderItemsUpdate(UpdateView):
         OrderFormSet = inlineformset_factory(
             Order, OrderItem, form=OrderItemForm, extra=1
         )
+
         if self.request.POST:
             data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            queryset = self.object.orderitems.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=queryset)
             for form in formset.forms:
                 if form.instance.pk:
                     form.initial["price"] = form.instance.product.price
