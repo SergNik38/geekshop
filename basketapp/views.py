@@ -12,9 +12,7 @@ from mainapp.models import Product
 @login_required
 def basket(request):
     title = "корзина"
-    basket_items = Basket.objects.filter(user=request.user).order_by(
-        "product__category"
-    )
+    basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
     content = {
         "title": title,
         "basket_items": basket_items,
@@ -72,9 +70,7 @@ def basket_edit(request, pk, quantity):
         else:
             new_basket_item.delete()
 
-        basket_items = Basket.objects.filter(user=request.user).order_by(
-            "product__category"
-        )
+        basket_items = Basket.objects.filter(user=request.user).order_by("product__category")
 
         content = {"basket_items": basket_items, "media_url": settings.MEDIA_URL}
 

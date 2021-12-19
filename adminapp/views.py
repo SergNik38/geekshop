@@ -7,11 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-from adminapp.forms import (
-    ProductCategoryEditForm,
-    ProductEditForm,
-    ShopUserAdminEditForm,
-)
+from adminapp.forms import ProductCategoryEditForm, ProductEditForm, ShopUserAdminEditForm
 from authnapp.forms import ShopUserRegisterForm
 from authnapp.models import ShopUser
 from mainapp.models import Product, ProductCategory
@@ -55,14 +51,10 @@ def user_update(request, pk):
 
     edit_user = get_object_or_404(ShopUser, pk=pk)
     if request.method == "POST":
-        edit_form = ShopUserAdminEditForm(
-            request.POST, request.FILES, instance=edit_user
-        )
+        edit_form = ShopUserAdminEditForm(request.POST, request.FILES, instance=edit_user)
         if edit_form.is_valid():
             edit_form.save()
-            return HttpResponseRedirect(
-                reverse("admin:user_update", args=[edit_user.pk])
-            )
+            return HttpResponseRedirect(reverse("admin:user_update", args=[edit_user.pk]))
     else:
         edit_form = ShopUserAdminEditForm(instance=edit_user)
 
@@ -130,9 +122,7 @@ class ProductCategoryUpdateView(LoginRequiredMixin, UpdateView):
         if "discount" in form.cleaned_data:
             discount = form.cleaned_data["discount"]
             if discount:
-                print(
-                    f"применяется скидка {discount}% к товарам категории {self.object.name}"
-                )
+                print(f"применяется скидка {discount}% к товарам категории {self.object.name}")
                 self.object.product_set.update(price=F("price") * (1 - discount / 100))
                 db_profile_by_type(self.__class__, "UPDATE", connection.queries)
 
@@ -202,9 +192,7 @@ def product_update(request, pk):
         edit_form = ProductEditForm(request.POST, request.FILES, instance=edit_product)
         if edit_form.is_valid():
             edit_form.save()
-            return HttpResponseRedirect(
-                reverse("admin:product_update", args=[edit_product.pk])
-            )
+            return HttpResponseRedirect(reverse("admin:product_update", args=[edit_product.pk]))
     else:
         edit_form = ProductEditForm(instance=edit_product)
 
@@ -225,9 +213,7 @@ def product_delete(request, pk):
     if request.method == "POST":
         product.is_active = False
         product.save()
-        return HttpResponseRedirect(
-            reverse("admin:products", args=[product.category.pk])
-        )
+        return HttpResponseRedirect(reverse("admin:products", args=[product.category.pk]))
 
     content = {
         "title": title,

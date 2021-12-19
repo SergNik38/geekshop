@@ -33,15 +33,11 @@ class Command(BaseCommand):
 
         # Conditions of sale: returns True or False of condition.
         # F objects means that all calculation will be in database with SQL query
-        action_1__condition = Q(
-            order__updated__lte=F("order__created") + action_1__time_delta
+        action_1__condition = Q(order__updated__lte=F("order__created") + action_1__time_delta)
+        action_2__condition = Q(order__updated__gt=F("order__created") + action_1__time_delta) & Q(
+            order__updated__lte=F("order__created") + action_2__time_delta
         )
-        action_2__condition = Q(
-            order__updated__gt=F("order__created") + action_1__time_delta
-        ) & Q(order__updated__lte=F("order__created") + action_2__time_delta)
-        action_expired__condition = Q(
-            order__updated__gt=F("order__created") + action_2__time_delta
-        )
+        action_expired__condition = Q(order__updated__gt=F("order__created") + action_2__time_delta)
 
         # Condition mapping with number of sale: when Q object returns True, then return number of sale
         action_1__order = When(action_1__condition, then=ACTION_1)

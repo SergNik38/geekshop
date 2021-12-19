@@ -15,12 +15,8 @@ class TestUserManagement(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.superuser = ShopUser.objects.create_superuser(
-            "django2", "django2@geekshop.local", "geekbrains"
-        )
-        self.user = ShopUser.objects.create_user(
-            "tarantino", "tarantino@geekshop.local", "geekbrains"
-        )
+        self.superuser = ShopUser.objects.create_superuser("django2", "django2@geekshop.local", "geekbrains")
+        self.user = ShopUser.objects.create_user("tarantino", "tarantino@geekshop.local", "geekbrains")
         self.user_with__first_name = ShopUser.objects.create_user(
             "umaturman", "umaturman@geekshop.local", "geekbrains", first_name="Ума"
         )
@@ -130,9 +126,7 @@ class TestUserManagement(TestCase):
         response = self.client.get(activation_url)
         self.assertEqual(response.status_code, 200)
 
-        self.client.login(
-            username=new_user_data["username"], password=new_user_data["password1"]
-        )
+        self.client.login(username=new_user_data["username"], password=new_user_data["password1"])
 
         # Log in
         response = self.client.get("/auth/login/")
